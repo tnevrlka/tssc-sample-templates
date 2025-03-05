@@ -20,9 +20,9 @@ env:
   # Set this to the user for your specific registry
   IMAGE_REGISTRY_USER: ${{ vars.IMAGE_REGISTRY_USER }}
   # Set this only when using an external Rekor instance
-  # REKOR_HOST: ${{ vars.REKOR_HOST }}
+  REKOR_HOST: ${{ vars.REKOR_HOST }}
   # Set this only when using an external TUF instance
-  # TUF_MIRROR: ${{ vars.TUF_MIRROR }}
+  TUF_MIRROR: ${{ vars.TUF_MIRROR }}
   # QUAY_IO_CREDS_USR: ${{ vars.QUAY_IO_CREDS_USR }}
   # ARTIFACTORY_IO_CREDS_USR: ${{ vars.ARTIFACTORY_IO_CREDS_USR }}
   # NEXUS_IO_CREDS_USR: ${{ vars.NEXUS_IO_CREDS_USR }}
@@ -78,9 +78,9 @@ jobs:
             /* Set this to the user for your specific registry */
             IMAGE_REGISTRY_USER: `${{ vars.IMAGE_REGISTRY_USER }}`, 
             /* Set this only when using an external Rekor instance */
-            /*REKOR_HOST: `${{ vars.REKOR_HOST }}`, */
+            REKOR_HOST: `${{ vars.REKOR_HOST }}`, 
             /* Set this only when using an external TUF instance */
-            /*TUF_MIRROR: `${{ vars.TUF_MIRROR }}`, */
+            TUF_MIRROR: `${{ vars.TUF_MIRROR }}`, 
             /*QUAY_IO_CREDS_USR: `${{ vars.QUAY_IO_CREDS_USR }}`, */
             /*ARTIFACTORY_IO_CREDS_USR: `${{ vars.ARTIFACTORY_IO_CREDS_USR }}`, */
             /*NEXUS_IO_CREDS_USR: `${{ vars.NEXUS_IO_CREDS_USR }}`, */
