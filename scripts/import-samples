@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" 
 ROOT_DIR=$(realpath $SCRIPTDIR/..)
 
@@ -12,6 +14,18 @@ if [ -d $SAMPLE_DIR ]; then
 else 
     (cd $SCRIPTDIR/samples;  git clone $REPO 2>&1 > /dev/null)
 fi
+
+# sed behaves differently on different platforms
+# sed --version is not valid on BSD, while it is valid on the GNU version
+SED_CMD() {
+    if sed --version > /dev/null 2>&1; then
+        # GNU version
+        sed -i "$@"
+    else
+        # BSD version
+        sed -i "" "$@"
+    fi
+}
 
 APP_NAME=$(yq ".metadata.name" $SAMPLE_DIR/devfile.yaml)
 APP_DISPLAY_NAME=$(yq ".metadata.displayName" $SAMPLE_DIR/devfile.yaml)
@@ -38,14 +52,14 @@ cp -r $ROOT_DIR/skeleton/backstage/mkdocs.yml  $DEST/content/mkdocs.yml
 # get readme to source component doc
 cp -r $DEST/content/README.md  $DEST/content/docs/source-component.md
 
-sed -i "s!sed.edit.NAME!$APP_NAME!g" $DEST/template.yaml
-sed -i "s!sed.edit.TITLE!$APP_DISPLAY_NAME!g" $DEST/template.yaml
-sed -i "s!sed.edit.DESCRIPTION!$APP_DESC!g" $DEST/template.yaml
-sed -i "s!sed.edit.APPTAGS!$APP_TAGS!g" $DEST/template.yaml
-sed -i "s!sed.edit.CATALOG_DESCRIPTION!Secure Supply Chain Example for $APP_DESC!g" $DEST/template.yaml
-sed -i "s!sed.edit.DOCKERFILE!$DOCKER_FILE!g" $DEST/template.yaml
-sed -i "s!sed.edit.BUILDCONTEXT!$BUILD_CONTEXT!g" $DEST/template.yaml
-sed -i "s!sed.edit.IMAGEPORT!$IMAGE_PORT!g" $DEST/template.yaml
+SED_CMD "s!sed.edit.NAME!$APP_NAME!g" $DEST/template.yaml
+SED_CMD "s!sed.edit.TITLE!$APP_DISPLAY_NAME!g" $DEST/template.yaml
+SED_CMD "s!sed.edit.DESCRIPTION!$APP_DESC!g" $DEST/template.yaml
+SED_CMD "s!sed.edit.APPTAGS!$APP_TAGS!g" $DEST/template.yaml
+SED_CMD "s!sed.edit.CATALOG_DESCRIPTION!Secure Supply Chain Example for $APP_DESC!g" $DEST/template.yaml
+SED_CMD "s!sed.edit.DOCKERFILE!$DOCKER_FILE!g" $DEST/template.yaml
+SED_CMD "s!sed.edit.BUILDCONTEXT!$BUILD_CONTEXT!g" $DEST/template.yaml
+SED_CMD "s!sed.edit.IMAGEPORT!$IMAGE_PORT!g" $DEST/template.yaml
 
 source $ROOT_DIR/properties
 cat $DEST/template.yaml | envsubst > $DEST/new-template.yaml

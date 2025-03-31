@@ -1,7 +1,21 @@
 #!/bin/bash
 
+set -euo pipefail
+
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" 
 ROOTDIR=$(realpath $SCRIPTDIR/..)
+
+# sed behaves differently on different platforms
+# sed --version is not valid on BSD, while it is valid on the GNU version
+SED_CMD() {
+    if sed --version > /dev/null 2>&1; then
+        # GNU version
+        sed -i "$@"
+    else
+        # BSD version
+        sed -i "" "$@"
+    fi
+}
 
 # get gitops templates
 REPO='https://github.com/redhat-appstudio/tssc-sample-gitops'
@@ -26,16 +40,16 @@ cp -r $TEMPDIR/$REPONAME/templates/application.yaml $DEST/
 rm -rf $TEMPDIR
 
 # replace {{value}} to ${{ value }} for software templates
-sed -i "s/{{/\${{ /g" $DEST/application.yaml
-sed -i "s/}}/ }}/g" $DEST/application.yaml
+SED_CMD "s/{{/\${{ /g" $DEST/application.yaml
+SED_CMD "s/}}/ }}/g" $DEST/application.yaml
 
 function iterate() {
   local dir="$1"
 
   for file in "$dir"/*; do
     if [ -f "$file" ]; then
-      sed -i "s/{{/\${{ /g" $file
-      sed -i "s/}}/ }}/g" $file
+      SED_CMD "s/{{/\${{ /g" $file
+      SED_CMD "s/}}/ }}/g" $file
     fi
 
     if [ -d "$file" ]; then
