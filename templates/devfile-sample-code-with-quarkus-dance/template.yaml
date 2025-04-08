@@ -287,7 +287,7 @@ spec:
       name: Fetch Gitops CI
       action: fetch:template
       input:
-        url: ../../skeleton/ci/gitops-template/${{ parameters.ciType}}
+        url: https://github.com/redhat-appstudio/tssc-dev-multi-ci/tree/main/generated/gitops-template/${{ parameters.ciType}}
         copyWithoutRender:
           - .github/workflows/*
         targetPath: gitops
@@ -443,7 +443,7 @@ spec:
       name: Fetch Source CI
       action: fetch:template
       input:
-        url: ../../skeleton/ci/source-repo/${{ parameters.ciType}}
+        url: https://github.com/tnevrlka/tssc-dev-multi-ci/tree/template-url-test/generated/source-repo/${{ parameters.ciType}}
         copyWithoutRender:
           - .github/workflows/*
         values:
